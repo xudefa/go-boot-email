@@ -6,8 +6,6 @@
 package email
 
 import (
-	emailcore "github.com/xudefa/go-boot-email"
-
 	"github.com/xudefa/go-boot/boot"
 	"github.com/xudefa/go-boot/condition"
 	"github.com/xudefa/go-boot/constants"
@@ -33,15 +31,15 @@ func (e *EmailAutoConfiguration) Configure(ctx boot.ApplicationContext) error {
 	env := ctx.Environment()
 
 	// 构建邮件配置选项
-	opts := []emailcore.EmailConfigOption{
-		emailcore.WithSmtp(env.GetString(constants.EmailSMTP, constants.DefaultEmailSMTP)),
-		emailcore.WithPort(env.GetInt(constants.EmailPort, constants.DefaultEmailPort)),
-		emailcore.WithUsername(env.GetString(constants.EmailUsername, constants.DefaultEmailUsername)),
-		emailcore.WithPassword(env.GetString(constants.EmailPassword, constants.DefaultEmailPassword)),
+	opts := []EmailConfigOption{
+		WithSmtp(env.GetString(constants.EmailSMTP, constants.DefaultEmailSMTP)),
+		WithPort(env.GetInt(constants.EmailPort, constants.DefaultEmailPort)),
+		WithUsername(env.GetString(constants.EmailUsername, constants.DefaultEmailUsername)),
+		WithPassword(env.GetString(constants.EmailPassword, constants.DefaultEmailPassword)),
 	}
 
 	// 创建邮件客户端
-	emailClient := emailcore.NewEmailClient(opts...)
+	emailClient := NewEmailClient(opts...)
 
 	// 注册到 IoC 容器
 	if err := ctx.Register(constants.EmailClientBeanID,

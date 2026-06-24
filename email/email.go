@@ -17,7 +17,7 @@ package email
 
 import (
 	"crypto/tls"
-	"log"
+	"fmt"
 
 	"gopkg.in/gomail.v2"
 )
@@ -90,7 +90,10 @@ func NewEmailClient(options ...EmailConfigOption) *EmailClient {
 //   - target: 收件人邮箱地址
 //   - subject: 邮件主题
 //   - content: 邮件内容（支持 HTML 格式）
-func (email *EmailClient) SendEmail(target, subject, content string) {
+//
+// 返回：
+//   - error: 发送失败时返回错误
+func (email *EmailClient) SendEmail(target, subject, content string) error {
 	// 创建一个新的邮件发送器
 	d := gomail.NewDialer(email.emailConfig.Smtp, email.emailConfig.Port, email.emailConfig.Username, email.emailConfig.Password)
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
@@ -109,7 +112,12 @@ func (email *EmailClient) SendEmail(target, subject, content string) {
 	m.SetBody("text/html", content)
 	// 发送邮件
 	if err := d.DialAndSend(m); err != nil {
-		log.Fatal("邮件发送错误:", err)
-		return
+		return fmt.Errorf("邮件发送失败: %w", err)
 	}
+	return nil
+}
+
+// GetConfig 返回当前配置，用于测试目的
+func (email *EmailClient) GetConfig() *emailConfig {
+	return email.emailConfig
 }
